@@ -1,0 +1,2119 @@
+{
+ "generated_by": "posedex/web_demo/mjcf/build_scene.py",
+ "run": "posedex/runs/r321_xarm-allegro5_ft318_geoKp64-cKp64_rcpST-drOrig_algoSAPG_s42_P1016-vx35k5x5-noMN05-hdSys2-hdDR3-hpd2-hqd0-hBcal-scp75-sct1-noAff2-tcur4-tf5-afC3-stgA-oRL-sb0-swc2s-tr50g-L5g40-spdF2-tcp4-tpx17-liftB-pb1-dgD4-gR05-dly200-hz30-srs2-pnR-xdelta",
+ "robot_urdf": "posedex/runs/r321_*/attempts/000/assets/rank_0/xarm_allegro_v5_cal_sim_prepped.urdf",
+ "mujoco_target": "3.16.0 (also loads in 3.3.4)",
+ "hand_actuator_mode": "position",
+ "timing": {
+  "isaac": {
+   "physics_dt": 0.00833333333,
+   "decimation": 4,
+   "control_dt": 0.03333333332,
+   "control_hz": 30,
+   "sources": {
+    "physics_dt": "posedex/runs/r321_*/attempts/000/resolved_config.json env.sim.dt",
+    "decimation": "utils/control_rate.apply_control_rate: decimation 2 -> 4 at env.control_hz 30 (60 Hz reference x 2)",
+    "targets": "the policy's joint targets are held for the 4 substeps (_apply_action rewrites the same _cur_targets); the hand PD torque is recomputed every substep (1/120 s)"
+   }
+  },
+  "mujoco": {
+   "timestep": 0.0020833333333333333,
+   "steps_per_control": 16,
+   "steps_per_isaac_substep": 4,
+   "note": "timestep = Isaac substep / 4: the arm drive's stiffness term is explicit in MuJoCo (implicitfast treats kv implicitly), contact solref (8 ms at 1/480, 12 ms at 1/240, sim2sim-tuned) >= 2 dt; hand_actuator=motor: compute the hand PD once per Isaac substep (every 4 MuJoCo steps), hand_pd.py"
+  }
+ },
+ "robot": {
+  "base_pos": [
+   0.0,
+   0.5,
+   0.53
+  ],
+  "base_quat_wxyz": [
+   0.7071067811865476,
+   0.0,
+   0.0,
+   -0.7071067811865476
+  ],
+  "base_sources": {
+   "pos": "embodiment base_pos x/y + work_surface.robot_base_pos: table_base_height_from_surface -> nominal table top 0.53 + robot_base_height_above_surface 0.0",
+   "quat": "embodiment base_rot_wxyz (yaw -90 deg)"
+  },
+  "gravity": "disabled on every robot body in Isaac (bake disable_gravity=True, assets.hand_gravity false) -> MuJoCo gravcomp=1 on every robot body",
+  "joints": {
+   "joint1": {
+    "axis": [
+     0.0,
+     0.0,
+     1.0
+    ],
+    "range": [
+     -1.57,
+     1.57
+    ],
+    "range_source": "prepped URDF <limit> (embodiment joint_limit_overrides / URDF)",
+    "kind": "arm",
+    "drive": "implicit PhysX position drive -> MuJoCo affine servo (kp, kv implicit under implicitfast)",
+    "stiffness": 600.0,
+    "damping": 27.027026473513512,
+    "effort_limit": 50.0,
+    "velocity_limit": 3.14,
+    "friction": 0.01,
+    "armature": 0.0,
+    "sources": {
+     "stiffness": "code_snapshot/isaacsimenvs/tasks/simtoolreal/utils/embodiment.py XARM_ALLEGRO (copied by embodiment_allegro5.XARM_ALLEGRO_V5(_CAL)) arm.stiffness",
+     "damping": "code_snapshot/isaacsimenvs/tasks/simtoolreal/utils/embodiment.py XARM_ALLEGRO (copied by embodiment_allegro5.XARM_ALLEGRO_V5(_CAL)) arm.damping",
+     "effort_limit": "code_snapshot/isaacsimenvs/tasks/simtoolreal/utils/embodiment.py XARM_ALLEGRO (copied by embodiment_allegro5.XARM_ALLEGRO_V5(_CAL)) arm.effort_limit_sim",
+     "velocity_limit": "code_snapshot/isaacsimenvs/tasks/simtoolreal/utils/embodiment.py XARM_ALLEGRO (copied by embodiment_allegro5.XARM_ALLEGRO_V5(_CAL)) arm.velocity_limit_sim",
+     "friction": "embodiment_allegro5.XARM_ALLEGRO_V5 arm.friction (0.01, pinned over the URDF's 1.0)",
+     "armature": "arm.armature None -> USD / PhysX default (no URDF armature): 0; Isaac readback in checks"
+    }
+   },
+   "joint2": {
+    "axis": [
+     0.0,
+     0.0,
+     1.0
+    ],
+    "range": [
+     -2.059,
+     2.0944
+    ],
+    "range_source": "prepped URDF <limit> (embodiment joint_limit_overrides / URDF)",
+    "kind": "arm",
+    "drive": "implicit PhysX position drive -> MuJoCo affine servo (kp, kv implicit under implicitfast)",
+    "stiffness": 600.0,
+    "damping": 27.027026473513512,
+    "effort_limit": 50.0,
+    "velocity_limit": 3.14,
+    "friction": 0.01,
+    "armature": 0.0,
+    "sources": {
+     "stiffness": "code_snapshot/isaacsimenvs/tasks/simtoolreal/utils/embodiment.py XARM_ALLEGRO (copied by embodiment_allegro5.XARM_ALLEGRO_V5(_CAL)) arm.stiffness",
+     "damping": "code_snapshot/isaacsimenvs/tasks/simtoolreal/utils/embodiment.py XARM_ALLEGRO (copied by embodiment_allegro5.XARM_ALLEGRO_V5(_CAL)) arm.damping",
+     "effort_limit": "code_snapshot/isaacsimenvs/tasks/simtoolreal/utils/embodiment.py XARM_ALLEGRO (copied by embodiment_allegro5.XARM_ALLEGRO_V5(_CAL)) arm.effort_limit_sim",
+     "velocity_limit": "code_snapshot/isaacsimenvs/tasks/simtoolreal/utils/embodiment.py XARM_ALLEGRO (copied by embodiment_allegro5.XARM_ALLEGRO_V5(_CAL)) arm.velocity_limit_sim",
+     "friction": "embodiment_allegro5.XARM_ALLEGRO_V5 arm.friction (0.01, pinned over the URDF's 1.0)",
+     "armature": "arm.armature None -> USD / PhysX default (no URDF armature): 0; Isaac readback in checks"
+    }
+   },
+   "joint3": {
+    "axis": [
+     0.0,
+     0.0,
+     1.0
+    ],
+    "range": [
+     -3.927,
+     0.19198
+    ],
+    "range_source": "prepped URDF <limit> (embodiment joint_limit_overrides / URDF)",
+    "kind": "arm",
+    "drive": "implicit PhysX position drive -> MuJoCo affine servo (kp, kv implicit under implicitfast)",
+    "stiffness": 400.0,
+    "damping": 22.067474708266914,
+    "effort_limit": 32.0,
+    "velocity_limit": 3.14,
+    "friction": 0.01,
+    "armature": 0.0,
+    "sources": {
+     "stiffness": "code_snapshot/isaacsimenvs/tasks/simtoolreal/utils/embodiment.py XARM_ALLEGRO (copied by embodiment_allegro5.XARM_ALLEGRO_V5(_CAL)) arm.stiffness",
+     "damping": "code_snapshot/isaacsimenvs/tasks/simtoolreal/utils/embodiment.py XARM_ALLEGRO (copied by embodiment_allegro5.XARM_ALLEGRO_V5(_CAL)) arm.damping",
+     "effort_limit": "code_snapshot/isaacsimenvs/tasks/simtoolreal/utils/embodiment.py XARM_ALLEGRO (copied by embodiment_allegro5.XARM_ALLEGRO_V5(_CAL)) arm.effort_limit_sim",
+     "velocity_limit": "code_snapshot/isaacsimenvs/tasks/simtoolreal/utils/embodiment.py XARM_ALLEGRO (copied by embodiment_allegro5.XARM_ALLEGRO_V5(_CAL)) arm.velocity_limit_sim",
+     "friction": "embodiment_allegro5.XARM_ALLEGRO_V5 arm.friction (0.01, pinned over the URDF's 1.0)",
+     "armature": "arm.armature None -> USD / PhysX default (no URDF armature): 0; Isaac readback in checks"
+    }
+   },
+   "joint4": {
+    "axis": [
+     0.0,
+     0.0,
+     1.0
+    ],
+    "range": [
+     -6.283185307179586,
+     6.283185307179586
+    ],
+    "range_source": "prepped URDF <limit> (embodiment joint_limit_overrides / URDF)",
+    "kind": "arm",
+    "drive": "implicit PhysX position drive -> MuJoCo affine servo (kp, kv implicit under implicitfast)",
+    "stiffness": 200.0,
+    "damping": 9.752538131173853,
+    "effort_limit": 32.0,
+    "velocity_limit": 3.14,
+    "friction": 0.01,
+    "armature": 0.0,
+    "sources": {
+     "stiffness": "code_snapshot/isaacsimenvs/tasks/simtoolreal/utils/embodiment.py XARM_ALLEGRO (copied by embodiment_allegro5.XARM_ALLEGRO_V5(_CAL)) arm.stiffness",
+     "damping": "code_snapshot/isaacsimenvs/tasks/simtoolreal/utils/embodiment.py XARM_ALLEGRO (copied by embodiment_allegro5.XARM_ALLEGRO_V5(_CAL)) arm.damping",
+     "effort_limit": "code_snapshot/isaacsimenvs/tasks/simtoolreal/utils/embodiment.py XARM_ALLEGRO (copied by embodiment_allegro5.XARM_ALLEGRO_V5(_CAL)) arm.effort_limit_sim",
+     "velocity_limit": "code_snapshot/isaacsimenvs/tasks/simtoolreal/utils/embodiment.py XARM_ALLEGRO (copied by embodiment_allegro5.XARM_ALLEGRO_V5(_CAL)) arm.velocity_limit_sim",
+     "friction": "embodiment_allegro5.XARM_ALLEGRO_V5 arm.friction (0.01, pinned over the URDF's 1.0)",
+     "armature": "arm.armature None -> USD / PhysX default (no URDF armature): 0; Isaac readback in checks"
+    }
+   },
+   "joint5": {
+    "axis": [
+     0.0,
+     0.0,
+     1.0
+    ],
+    "range": [
+     -1.69297,
+     3.141592653589793
+    ],
+    "range_source": "prepped URDF <limit> (embodiment joint_limit_overrides / URDF)",
+    "kind": "arm",
+    "drive": "implicit PhysX position drive -> MuJoCo affine servo (kp, kv implicit under implicitfast)",
+    "stiffness": 200.0,
+    "damping": 9.147747263670984,
+    "effort_limit": 32.0,
+    "velocity_limit": 3.14,
+    "friction": 0.01,
+    "armature": 0.0,
+    "sources": {
+     "stiffness": "code_snapshot/isaacsimenvs/tasks/simtoolreal/utils/embodiment.py XARM_ALLEGRO (copied by embodiment_allegro5.XARM_ALLEGRO_V5(_CAL)) arm.stiffness",
+     "damping": "code_snapshot/isaacsimenvs/tasks/simtoolreal/utils/embodiment.py XARM_ALLEGRO (copied by embodiment_allegro5.XARM_ALLEGRO_V5(_CAL)) arm.damping",
+     "effort_limit": "code_snapshot/isaacsimenvs/tasks/simtoolreal/utils/embodiment.py XARM_ALLEGRO (copied by embodiment_allegro5.XARM_ALLEGRO_V5(_CAL)) arm.effort_limit_sim",
+     "velocity_limit": "code_snapshot/isaacsimenvs/tasks/simtoolreal/utils/embodiment.py XARM_ALLEGRO (copied by embodiment_allegro5.XARM_ALLEGRO_V5(_CAL)) arm.velocity_limit_sim",
+     "friction": "embodiment_allegro5.XARM_ALLEGRO_V5 arm.friction (0.01, pinned over the URDF's 1.0)",
+     "armature": "arm.armature None -> USD / PhysX default (no URDF armature): 0; Isaac readback in checks"
+    }
+   },
+   "joint6": {
+    "axis": [
+     0.0,
+     0.0,
+     1.0
+    ],
+    "range": [
+     -6.283185307179586,
+     6.283185307179586
+    ],
+    "range_source": "prepped URDF <limit> (embodiment joint_limit_overrides / URDF)",
+    "kind": "arm",
+    "drive": "implicit PhysX position drive -> MuJoCo affine servo (kp, kv implicit under implicitfast)",
+    "stiffness": 200.0,
+    "damping": 9.147747263670984,
+    "effort_limit": 20.0,
+    "velocity_limit": 3.14,
+    "friction": 0.01,
+    "armature": 0.0,
+    "sources": {
+     "stiffness": "code_snapshot/isaacsimenvs/tasks/simtoolreal/utils/embodiment.py XARM_ALLEGRO (copied by embodiment_allegro5.XARM_ALLEGRO_V5(_CAL)) arm.stiffness",
+     "damping": "code_snapshot/isaacsimenvs/tasks/simtoolreal/utils/embodiment.py XARM_ALLEGRO (copied by embodiment_allegro5.XARM_ALLEGRO_V5(_CAL)) arm.damping",
+     "effort_limit": "code_snapshot/isaacsimenvs/tasks/simtoolreal/utils/embodiment.py XARM_ALLEGRO (copied by embodiment_allegro5.XARM_ALLEGRO_V5(_CAL)) arm.effort_limit_sim",
+     "velocity_limit": "code_snapshot/isaacsimenvs/tasks/simtoolreal/utils/embodiment.py XARM_ALLEGRO (copied by embodiment_allegro5.XARM_ALLEGRO_V5(_CAL)) arm.velocity_limit_sim",
+     "friction": "embodiment_allegro5.XARM_ALLEGRO_V5 arm.friction (0.01, pinned over the URDF's 1.0)",
+     "armature": "arm.armature None -> USD / PhysX default (no URDF armature): 0; Isaac readback in checks"
+    }
+   },
+   "joint_0_0": {
+    "axis": [
+     0.0,
+     0.0,
+     1.0
+    ],
+    "range": [
+     -0.331379,
+     0.321632
+    ],
+    "range_source": "prepped URDF <limit> (CAL_HAND_LIMITS = rig raw stops x state gain + offset)",
+    "kind": "hand",
+    "drive": "explicit PD tau = clip(K (q* - q[t-n]) - D qd[t-n], +-effort) every 1/120 s (hand_delay_pd d2)",
+    "stiffness": 1.026016384586377,
+    "damping": 0.04617073730638696,
+    "effort_limit_eval": 0.17,
+    "effort_limit_training_range": [
+     0.12,
+     0.25
+    ],
+    "velocity_limit": 9.746433049440384,
+    "friction_static": 0.02,
+    "friction_dynamic": 0.016,
+    "armature": 0.001,
+    "state_gain": 0.9746433049440384,
+    "stiffness_raw": 1.0,
+    "damping_raw": 0.045,
+    "sources": {
+     "stiffness": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_stiffness[0] / STATE_GAIN (utils/hand_drive.apply_hand_drive (cal1: K / gain, D / gain, velocity x gain) + utils/hand_delay_pd.py (explicit PD d2))",
+     "damping": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_damping[0] / STATE_GAIN; eval hand damping DR scale env.domain_randomization.hand_damping_eval_scale = 1.0",
+     "effort_limit_eval": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_drive_eval_effort_nm (= env.eval_real.hand_effort_nm); mesh_evaluation.nominal_physics writes it to every env in both eval passes",
+     "velocity_limit": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_velocity_limit x STATE_GAIN (PhysX max joint velocity)",
+     "friction_static": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_friction[0]",
+     "friction_dynamic": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_dynamic_friction[0]",
+     "armature": "code_snapshot/isaacsimenvs/tasks/simtoolreal/utils/embodiment.py XARM_ALLEGRO (copied by embodiment_allegro5.XARM_ALLEGRO_V5(_CAL)) hand.armature (assets.hand_armature empty)"
+    }
+   },
+   "joint_1_0": {
+    "axis": [
+     0.0,
+     1.0,
+     0.0
+    ],
+    "range": [
+     -0.02659,
+     1.596115
+    ],
+    "range_source": "prepped URDF <limit> (CAL_HAND_LIMITS = rig raw stops x state gain + offset)",
+    "kind": "hand",
+    "drive": "explicit PD tau = clip(K (q* - q[t-n]) - D qd[t-n], +-effort) every 1/120 s (hand_delay_pd d2)",
+    "stiffness": 0.47340712810284397,
+    "damping": 0.07204021514608495,
+    "effort_limit_eval": 0.17,
+    "effort_limit_training_range": [
+     0.12,
+     0.25
+    ],
+    "velocity_limit": 9.716794967651367,
+    "friction_static": 0.02,
+    "friction_dynamic": 0.016,
+    "armature": 0.001,
+    "state_gain": 0.9716794967651367,
+    "stiffness_raw": 0.46,
+    "damping_raw": 0.07,
+    "sources": {
+     "stiffness": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_stiffness[1] / STATE_GAIN (utils/hand_drive.apply_hand_drive (cal1: K / gain, D / gain, velocity x gain) + utils/hand_delay_pd.py (explicit PD d2))",
+     "damping": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_damping[1] / STATE_GAIN; eval hand damping DR scale env.domain_randomization.hand_damping_eval_scale = 1.0",
+     "effort_limit_eval": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_drive_eval_effort_nm (= env.eval_real.hand_effort_nm); mesh_evaluation.nominal_physics writes it to every env in both eval passes",
+     "velocity_limit": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_velocity_limit x STATE_GAIN (PhysX max joint velocity)",
+     "friction_static": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_friction[1]",
+     "friction_dynamic": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_dynamic_friction[1]",
+     "armature": "code_snapshot/isaacsimenvs/tasks/simtoolreal/utils/embodiment.py XARM_ALLEGRO (copied by embodiment_allegro5.XARM_ALLEGRO_V5(_CAL)) hand.armature (assets.hand_armature empty)"
+    }
+   },
+   "joint_2_0": {
+    "axis": [
+     0.0,
+     1.0,
+     0.0
+    ],
+    "range": [
+     -0.049178,
+     1.803881
+    ],
+    "range_source": "prepped URDF <limit> (CAL_HAND_LIMITS = rig raw stops x state gain + offset)",
+    "kind": "hand",
+    "drive": "explicit PD tau = clip(K (q* - q[t-n]) - D qd[t-n], +-effort) every 1/120 s (hand_delay_pd d2)",
+    "stiffness": 1.0253317610193096,
+    "damping": 0.04613992924586893,
+    "effort_limit_eval": 0.17,
+    "effort_limit_training_range": [
+     0.12,
+     0.25
+    ],
+    "velocity_limit": 9.752940833568575,
+    "friction_static": 0.02,
+    "friction_dynamic": 0.016,
+    "armature": 0.001,
+    "state_gain": 0.9752940833568574,
+    "stiffness_raw": 1.0,
+    "damping_raw": 0.045,
+    "sources": {
+     "stiffness": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_stiffness[2] / STATE_GAIN (utils/hand_drive.apply_hand_drive (cal1: K / gain, D / gain, velocity x gain) + utils/hand_delay_pd.py (explicit PD d2))",
+     "damping": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_damping[2] / STATE_GAIN; eval hand damping DR scale env.domain_randomization.hand_damping_eval_scale = 1.0",
+     "effort_limit_eval": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_drive_eval_effort_nm (= env.eval_real.hand_effort_nm); mesh_evaluation.nominal_physics writes it to every env in both eval passes",
+     "velocity_limit": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_velocity_limit x STATE_GAIN (PhysX max joint velocity)",
+     "friction_static": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_friction[2]",
+     "friction_dynamic": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_dynamic_friction[2]",
+     "armature": "code_snapshot/isaacsimenvs/tasks/simtoolreal/utils/embodiment.py XARM_ALLEGRO (copied by embodiment_allegro5.XARM_ALLEGRO_V5(_CAL)) hand.armature (assets.hand_armature empty)"
+    }
+   },
+   "joint_3_0": {
+    "axis": [
+     0.0,
+     1.0,
+     0.0
+    ],
+    "range": [
+     0.016598,
+     1.790603
+    ],
+    "range_source": "prepped URDF <limit> (CAL_HAND_LIMITS = rig raw stops x state gain + offset)",
+    "kind": "hand",
+    "drive": "explicit PD tau = clip(K (q* - q[t-n]) - D qd[t-n], +-effort) every 1/120 s (hand_delay_pd d2)",
+    "stiffness": 1.1499405459878538,
+    "damping": 0.05174732456945342,
+    "effort_limit_eval": 0.17,
+    "effort_limit_training_range": [
+     0.12,
+     0.25
+    ],
+    "velocity_limit": 8.696101754903792,
+    "friction_static": 0.02,
+    "friction_dynamic": 0.016,
+    "armature": 0.001,
+    "state_gain": 0.8696101754903792,
+    "stiffness_raw": 1.0,
+    "damping_raw": 0.045,
+    "sources": {
+     "stiffness": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_stiffness[3] / STATE_GAIN (utils/hand_drive.apply_hand_drive (cal1: K / gain, D / gain, velocity x gain) + utils/hand_delay_pd.py (explicit PD d2))",
+     "damping": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_damping[3] / STATE_GAIN; eval hand damping DR scale env.domain_randomization.hand_damping_eval_scale = 1.0",
+     "effort_limit_eval": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_drive_eval_effort_nm (= env.eval_real.hand_effort_nm); mesh_evaluation.nominal_physics writes it to every env in both eval passes",
+     "velocity_limit": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_velocity_limit x STATE_GAIN (PhysX max joint velocity)",
+     "friction_static": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_friction[3]",
+     "friction_dynamic": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_dynamic_friction[3]",
+     "armature": "code_snapshot/isaacsimenvs/tasks/simtoolreal/utils/embodiment.py XARM_ALLEGRO (copied by embodiment_allegro5.XARM_ALLEGRO_V5(_CAL)) hand.armature (assets.hand_armature empty)"
+    }
+   },
+   "joint_4_0": {
+    "axis": [
+     0.0,
+     0.0,
+     1.0
+    ],
+    "range": [
+     -0.273438,
+     0.335182
+    ],
+    "range_source": "prepped URDF <limit> (CAL_HAND_LIMITS = rig raw stops x state gain + offset)",
+    "kind": "hand",
+    "drive": "explicit PD tau = clip(K (q* - q[t-n]) - D qd[t-n], +-effort) every 1/120 s (hand_delay_pd d2)",
+    "stiffness": 1.1337116359915247,
+    "damping": 0.05101702361961861,
+    "effort_limit_eval": 0.17,
+    "effort_limit_training_range": [
+     0.12,
+     0.25
+    ],
+    "velocity_limit": 8.820585131645203,
+    "friction_static": 0.02,
+    "friction_dynamic": 0.016,
+    "armature": 0.001,
+    "state_gain": 0.8820585131645202,
+    "stiffness_raw": 1.0,
+    "damping_raw": 0.045,
+    "sources": {
+     "stiffness": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_stiffness[4] / STATE_GAIN (utils/hand_drive.apply_hand_drive (cal1: K / gain, D / gain, velocity x gain) + utils/hand_delay_pd.py (explicit PD d2))",
+     "damping": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_damping[4] / STATE_GAIN; eval hand damping DR scale env.domain_randomization.hand_damping_eval_scale = 1.0",
+     "effort_limit_eval": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_drive_eval_effort_nm (= env.eval_real.hand_effort_nm); mesh_evaluation.nominal_physics writes it to every env in both eval passes",
+     "velocity_limit": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_velocity_limit x STATE_GAIN (PhysX max joint velocity)",
+     "friction_static": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_friction[4]",
+     "friction_dynamic": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_dynamic_friction[4]",
+     "armature": "code_snapshot/isaacsimenvs/tasks/simtoolreal/utils/embodiment.py XARM_ALLEGRO (copied by embodiment_allegro5.XARM_ALLEGRO_V5(_CAL)) hand.armature (assets.hand_armature empty)"
+    }
+   },
+   "joint_5_0": {
+    "axis": [
+     0.0,
+     1.0,
+     0.0
+    ],
+    "range": [
+     -0.018394,
+     1.786507
+    ],
+    "range_source": "prepped URDF <limit> (CAL_HAND_LIMITS = rig raw stops x state gain + offset)",
+    "kind": "hand",
+    "drive": "explicit PD tau = clip(K (q* - q[t-n]) - D qd[t-n], +-effort) every 1/120 s (hand_delay_pd d2)",
+    "stiffness": 0.46129952254909384,
+    "damping": 0.07019775343138385,
+    "effort_limit_eval": 0.17,
+    "effort_limit_training_range": [
+     0.12,
+     0.25
+    ],
+    "velocity_limit": 9.97182909399271,
+    "friction_static": 0.02,
+    "friction_dynamic": 0.016,
+    "armature": 0.001,
+    "state_gain": 0.997182909399271,
+    "stiffness_raw": 0.46,
+    "damping_raw": 0.07,
+    "sources": {
+     "stiffness": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_stiffness[5] / STATE_GAIN (utils/hand_drive.apply_hand_drive (cal1: K / gain, D / gain, velocity x gain) + utils/hand_delay_pd.py (explicit PD d2))",
+     "damping": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_damping[5] / STATE_GAIN; eval hand damping DR scale env.domain_randomization.hand_damping_eval_scale = 1.0",
+     "effort_limit_eval": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_drive_eval_effort_nm (= env.eval_real.hand_effort_nm); mesh_evaluation.nominal_physics writes it to every env in both eval passes",
+     "velocity_limit": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_velocity_limit x STATE_GAIN (PhysX max joint velocity)",
+     "friction_static": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_friction[5]",
+     "friction_dynamic": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_dynamic_friction[5]",
+     "armature": "code_snapshot/isaacsimenvs/tasks/simtoolreal/utils/embodiment.py XARM_ALLEGRO (copied by embodiment_allegro5.XARM_ALLEGRO_V5(_CAL)) hand.armature (assets.hand_armature empty)"
+    }
+   },
+   "joint_6_0": {
+    "axis": [
+     0.0,
+     1.0,
+     0.0
+    ],
+    "range": [
+     -0.040673,
+     1.843878
+    ],
+    "range_source": "prepped URDF <limit> (CAL_HAND_LIMITS = rig raw stops x state gain + offset)",
+    "kind": "hand",
+    "drive": "explicit PD tau = clip(K (q* - q[t-n]) - D qd[t-n], +-effort) every 1/120 s (hand_delay_pd d2)",
+    "stiffness": 1.0135038022727323,
+    "damping": 0.04560767110227295,
+    "effort_limit_eval": 0.17,
+    "effort_limit_training_range": [
+     0.12,
+     0.25
+    ],
+    "velocity_limit": 9.866761207580566,
+    "friction_static": 0.02,
+    "friction_dynamic": 0.016,
+    "armature": 0.001,
+    "state_gain": 0.9866761207580567,
+    "stiffness_raw": 1.0,
+    "damping_raw": 0.045,
+    "sources": {
+     "stiffness": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_stiffness[6] / STATE_GAIN (utils/hand_drive.apply_hand_drive (cal1: K / gain, D / gain, velocity x gain) + utils/hand_delay_pd.py (explicit PD d2))",
+     "damping": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_damping[6] / STATE_GAIN; eval hand damping DR scale env.domain_randomization.hand_damping_eval_scale = 1.0",
+     "effort_limit_eval": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_drive_eval_effort_nm (= env.eval_real.hand_effort_nm); mesh_evaluation.nominal_physics writes it to every env in both eval passes",
+     "velocity_limit": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_velocity_limit x STATE_GAIN (PhysX max joint velocity)",
+     "friction_static": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_friction[6]",
+     "friction_dynamic": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_dynamic_friction[6]",
+     "armature": "code_snapshot/isaacsimenvs/tasks/simtoolreal/utils/embodiment.py XARM_ALLEGRO (copied by embodiment_allegro5.XARM_ALLEGRO_V5(_CAL)) hand.armature (assets.hand_armature empty)"
+    }
+   },
+   "joint_7_0": {
+    "axis": [
+     0.0,
+     1.0,
+     0.0
+    ],
+    "range": [
+     0.044515,
+     1.772389
+    ],
+    "range_source": "prepped URDF <limit> (CAL_HAND_LIMITS = rig raw stops x state gain + offset)",
+    "kind": "hand",
+    "drive": "explicit PD tau = clip(K (q* - q[t-n]) - D qd[t-n], +-effort) every 1/120 s (hand_delay_pd d2)",
+    "stiffness": 1.0880427197803324,
+    "damping": 0.04896192239011495,
+    "effort_limit_eval": 0.17,
+    "effort_limit_training_range": [
+     0.12,
+     0.25
+    ],
+    "velocity_limit": 9.190815597772598,
+    "friction_static": 0.02,
+    "friction_dynamic": 0.016,
+    "armature": 0.001,
+    "state_gain": 0.9190815597772599,
+    "stiffness_raw": 1.0,
+    "damping_raw": 0.045,
+    "sources": {
+     "stiffness": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_stiffness[7] / STATE_GAIN (utils/hand_drive.apply_hand_drive (cal1: K / gain, D / gain, velocity x gain) + utils/hand_delay_pd.py (explicit PD d2))",
+     "damping": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_damping[7] / STATE_GAIN; eval hand damping DR scale env.domain_randomization.hand_damping_eval_scale = 1.0",
+     "effort_limit_eval": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_drive_eval_effort_nm (= env.eval_real.hand_effort_nm); mesh_evaluation.nominal_physics writes it to every env in both eval passes",
+     "velocity_limit": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_velocity_limit x STATE_GAIN (PhysX max joint velocity)",
+     "friction_static": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_friction[7]",
+     "friction_dynamic": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_dynamic_friction[7]",
+     "armature": "code_snapshot/isaacsimenvs/tasks/simtoolreal/utils/embodiment.py XARM_ALLEGRO (copied by embodiment_allegro5.XARM_ALLEGRO_V5(_CAL)) hand.armature (assets.hand_armature empty)"
+    }
+   },
+   "joint_8_0": {
+    "axis": [
+     0.0,
+     0.0,
+     1.0
+    ],
+    "range": [
+     -0.300934,
+     0.319742
+    ],
+    "range_source": "prepped URDF <limit> (CAL_HAND_LIMITS = rig raw stops x state gain + offset)",
+    "kind": "hand",
+    "drive": "explicit PD tau = clip(K (q* - q[t-n]) - D qd[t-n], +-effort) every 1/120 s (hand_delay_pd d2)",
+    "stiffness": 1.0633559363966307,
+    "damping": 0.04785101713784838,
+    "effort_limit_eval": 0.17,
+    "effort_limit_training_range": [
+     0.12,
+     0.25
+    ],
+    "velocity_limit": 9.404188811779022,
+    "friction_static": 0.02,
+    "friction_dynamic": 0.016,
+    "armature": 0.001,
+    "state_gain": 0.9404188811779022,
+    "stiffness_raw": 1.0,
+    "damping_raw": 0.045,
+    "sources": {
+     "stiffness": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_stiffness[8] / STATE_GAIN (utils/hand_drive.apply_hand_drive (cal1: K / gain, D / gain, velocity x gain) + utils/hand_delay_pd.py (explicit PD d2))",
+     "damping": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_damping[8] / STATE_GAIN; eval hand damping DR scale env.domain_randomization.hand_damping_eval_scale = 1.0",
+     "effort_limit_eval": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_drive_eval_effort_nm (= env.eval_real.hand_effort_nm); mesh_evaluation.nominal_physics writes it to every env in both eval passes",
+     "velocity_limit": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_velocity_limit x STATE_GAIN (PhysX max joint velocity)",
+     "friction_static": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_friction[8]",
+     "friction_dynamic": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_dynamic_friction[8]",
+     "armature": "code_snapshot/isaacsimenvs/tasks/simtoolreal/utils/embodiment.py XARM_ALLEGRO (copied by embodiment_allegro5.XARM_ALLEGRO_V5(_CAL)) hand.armature (assets.hand_armature empty)"
+    }
+   },
+   "joint_9_0": {
+    "axis": [
+     0.0,
+     1.0,
+     0.0
+    ],
+    "range": [
+     -0.032005,
+     1.773196
+    ],
+    "range_source": "prepped URDF <limit> (CAL_HAND_LIMITS = rig raw stops x state gain + offset)",
+    "kind": "hand",
+    "drive": "explicit PD tau = clip(K (q* - q[t-n]) - D qd[t-n], +-effort) every 1/120 s (hand_delay_pd d2)",
+    "stiffness": 0.46631937798123885,
+    "damping": 0.07096164447540591,
+    "effort_limit_eval": 0.17,
+    "effort_limit_training_range": [
+     0.12,
+     0.25
+    ],
+    "velocity_limit": 9.864483907818794,
+    "friction_static": 0.02,
+    "friction_dynamic": 0.016,
+    "armature": 0.001,
+    "state_gain": 0.9864483907818794,
+    "stiffness_raw": 0.46,
+    "damping_raw": 0.07,
+    "sources": {
+     "stiffness": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_stiffness[9] / STATE_GAIN (utils/hand_drive.apply_hand_drive (cal1: K / gain, D / gain, velocity x gain) + utils/hand_delay_pd.py (explicit PD d2))",
+     "damping": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_damping[9] / STATE_GAIN; eval hand damping DR scale env.domain_randomization.hand_damping_eval_scale = 1.0",
+     "effort_limit_eval": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_drive_eval_effort_nm (= env.eval_real.hand_effort_nm); mesh_evaluation.nominal_physics writes it to every env in both eval passes",
+     "velocity_limit": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_velocity_limit x STATE_GAIN (PhysX max joint velocity)",
+     "friction_static": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_friction[9]",
+     "friction_dynamic": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_dynamic_friction[9]",
+     "armature": "code_snapshot/isaacsimenvs/tasks/simtoolreal/utils/embodiment.py XARM_ALLEGRO (copied by embodiment_allegro5.XARM_ALLEGRO_V5(_CAL)) hand.armature (assets.hand_armature empty)"
+    }
+   },
+   "joint_10_0": {
+    "axis": [
+     0.0,
+     1.0,
+     0.0
+    ],
+    "range": [
+     -0.032994,
+     1.839098
+    ],
+    "range_source": "prepped URDF <limit> (CAL_HAND_LIMITS = rig raw stops x state gain + offset)",
+    "kind": "hand",
+    "drive": "explicit PD tau = clip(K (q* - q[t-n]) - D qd[t-n], +-effort) every 1/120 s (hand_delay_pd d2)",
+    "stiffness": 1.017578006138521,
+    "damping": 0.04579101027623343,
+    "effort_limit_eval": 0.17,
+    "effort_limit_training_range": [
+     0.12,
+     0.25
+    ],
+    "velocity_limit": 9.827256426215172,
+    "friction_static": 0.02,
+    "friction_dynamic": 0.016,
+    "armature": 0.001,
+    "state_gain": 0.9827256426215172,
+    "stiffness_raw": 1.0,
+    "damping_raw": 0.045,
+    "sources": {
+     "stiffness": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_stiffness[10] / STATE_GAIN (utils/hand_drive.apply_hand_drive (cal1: K / gain, D / gain, velocity x gain) + utils/hand_delay_pd.py (explicit PD d2))",
+     "damping": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_damping[10] / STATE_GAIN; eval hand damping DR scale env.domain_randomization.hand_damping_eval_scale = 1.0",
+     "effort_limit_eval": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_drive_eval_effort_nm (= env.eval_real.hand_effort_nm); mesh_evaluation.nominal_physics writes it to every env in both eval passes",
+     "velocity_limit": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_velocity_limit x STATE_GAIN (PhysX max joint velocity)",
+     "friction_static": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_friction[10]",
+     "friction_dynamic": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_dynamic_friction[10]",
+     "armature": "code_snapshot/isaacsimenvs/tasks/simtoolreal/utils/embodiment.py XARM_ALLEGRO (copied by embodiment_allegro5.XARM_ALLEGRO_V5(_CAL)) hand.armature (assets.hand_armature empty)"
+    }
+   },
+   "joint_11_0": {
+    "axis": [
+     0.0,
+     1.0,
+     0.0
+    ],
+    "range": [
+     0.01449,
+     1.796433
+    ],
+    "range_source": "prepped URDF <limit> (CAL_HAND_LIMITS = rig raw stops x state gain + offset)",
+    "kind": "hand",
+    "drive": "explicit PD tau = clip(K (q* - q[t-n]) - D qd[t-n], +-effort) every 1/120 s (hand_delay_pd d2)",
+    "stiffness": 1.0550282759910388,
+    "damping": 0.047476272419596746,
+    "effort_limit_eval": 0.17,
+    "effort_limit_training_range": [
+     0.12,
+     0.25
+    ],
+    "velocity_limit": 9.478418946266174,
+    "friction_static": 0.02,
+    "friction_dynamic": 0.016,
+    "armature": 0.001,
+    "state_gain": 0.9478418946266174,
+    "stiffness_raw": 1.0,
+    "damping_raw": 0.045,
+    "sources": {
+     "stiffness": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_stiffness[11] / STATE_GAIN (utils/hand_drive.apply_hand_drive (cal1: K / gain, D / gain, velocity x gain) + utils/hand_delay_pd.py (explicit PD d2))",
+     "damping": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_damping[11] / STATE_GAIN; eval hand damping DR scale env.domain_randomization.hand_damping_eval_scale = 1.0",
+     "effort_limit_eval": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_drive_eval_effort_nm (= env.eval_real.hand_effort_nm); mesh_evaluation.nominal_physics writes it to every env in both eval passes",
+     "velocity_limit": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_velocity_limit x STATE_GAIN (PhysX max joint velocity)",
+     "friction_static": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_friction[11]",
+     "friction_dynamic": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_dynamic_friction[11]",
+     "armature": "code_snapshot/isaacsimenvs/tasks/simtoolreal/utils/embodiment.py XARM_ALLEGRO (copied by embodiment_allegro5.XARM_ALLEGRO_V5(_CAL)) hand.armature (assets.hand_armature empty)"
+    }
+   },
+   "joint_12_0": {
+    "axis": [
+     -1.0,
+     0.0,
+     0.0
+    ],
+    "range": [
+     0.0,
+     1.78
+    ],
+    "range_source": "prepped URDF <limit> (CAL_HAND_LIMITS = rig raw stops x state gain + offset)",
+    "kind": "hand",
+    "drive": "explicit PD tau = clip(K (q* - q[t-n]) - D qd[t-n], +-effort) every 1/120 s (hand_delay_pd d2)",
+    "stiffness": 0.73,
+    "damping": 0.03,
+    "effort_limit_eval": 0.17,
+    "effort_limit_training_range": [
+     0.12,
+     0.25
+    ],
+    "velocity_limit": 10.0,
+    "friction_static": 0.02,
+    "friction_dynamic": 0.016,
+    "armature": 0.001,
+    "state_gain": 1.0,
+    "stiffness_raw": 0.73,
+    "damping_raw": 0.03,
+    "sources": {
+     "stiffness": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_stiffness[12] / STATE_GAIN (utils/hand_drive.apply_hand_drive (cal1: K / gain, D / gain, velocity x gain) + utils/hand_delay_pd.py (explicit PD d2))",
+     "damping": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_damping[12] / STATE_GAIN; eval hand damping DR scale env.domain_randomization.hand_damping_eval_scale = 1.0",
+     "effort_limit_eval": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_drive_eval_effort_nm (= env.eval_real.hand_effort_nm); mesh_evaluation.nominal_physics writes it to every env in both eval passes",
+     "velocity_limit": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_velocity_limit x STATE_GAIN (PhysX max joint velocity)",
+     "friction_static": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_friction[12]",
+     "friction_dynamic": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_dynamic_friction[12]",
+     "armature": "code_snapshot/isaacsimenvs/tasks/simtoolreal/utils/embodiment.py XARM_ALLEGRO (copied by embodiment_allegro5.XARM_ALLEGRO_V5(_CAL)) hand.armature (assets.hand_armature empty)"
+    }
+   },
+   "joint_13_0": {
+    "axis": [
+     0.0,
+     0.0,
+     1.0
+    ],
+    "range": [
+     -0.26,
+     1.7
+    ],
+    "range_source": "prepped URDF <limit> (CAL_HAND_LIMITS = rig raw stops x state gain + offset)",
+    "kind": "hand",
+    "drive": "explicit PD tau = clip(K (q* - q[t-n]) - D qd[t-n], +-effort) every 1/120 s (hand_delay_pd d2)",
+    "stiffness": 0.73,
+    "damping": 0.03,
+    "effort_limit_eval": 0.17,
+    "effort_limit_training_range": [
+     0.12,
+     0.25
+    ],
+    "velocity_limit": 10.0,
+    "friction_static": 0.02,
+    "friction_dynamic": 0.016,
+    "armature": 0.001,
+    "state_gain": 1.0,
+    "stiffness_raw": 0.73,
+    "damping_raw": 0.03,
+    "sources": {
+     "stiffness": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_stiffness[13] / STATE_GAIN (utils/hand_drive.apply_hand_drive (cal1: K / gain, D / gain, velocity x gain) + utils/hand_delay_pd.py (explicit PD d2))",
+     "damping": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_damping[13] / STATE_GAIN; eval hand damping DR scale env.domain_randomization.hand_damping_eval_scale = 1.0",
+     "effort_limit_eval": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_drive_eval_effort_nm (= env.eval_real.hand_effort_nm); mesh_evaluation.nominal_physics writes it to every env in both eval passes",
+     "velocity_limit": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_velocity_limit x STATE_GAIN (PhysX max joint velocity)",
+     "friction_static": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_friction[13]",
+     "friction_dynamic": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_dynamic_friction[13]",
+     "armature": "code_snapshot/isaacsimenvs/tasks/simtoolreal/utils/embodiment.py XARM_ALLEGRO (copied by embodiment_allegro5.XARM_ALLEGRO_V5(_CAL)) hand.armature (assets.hand_armature empty)"
+    }
+   },
+   "joint_14_0": {
+    "axis": [
+     0.0,
+     1.0,
+     0.0
+    ],
+    "range": [
+     -0.05,
+     1.85
+    ],
+    "range_source": "prepped URDF <limit> (CAL_HAND_LIMITS = rig raw stops x state gain + offset)",
+    "kind": "hand",
+    "drive": "explicit PD tau = clip(K (q* - q[t-n]) - D qd[t-n], +-effort) every 1/120 s (hand_delay_pd d2)",
+    "stiffness": 0.73,
+    "damping": 0.03,
+    "effort_limit_eval": 0.17,
+    "effort_limit_training_range": [
+     0.12,
+     0.25
+    ],
+    "velocity_limit": 10.0,
+    "friction_static": 0.02,
+    "friction_dynamic": 0.016,
+    "armature": 0.001,
+    "state_gain": 1.0,
+    "stiffness_raw": 0.73,
+    "damping_raw": 0.03,
+    "sources": {
+     "stiffness": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_stiffness[14] / STATE_GAIN (utils/hand_drive.apply_hand_drive (cal1: K / gain, D / gain, velocity x gain) + utils/hand_delay_pd.py (explicit PD d2))",
+     "damping": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_damping[14] / STATE_GAIN; eval hand damping DR scale env.domain_randomization.hand_damping_eval_scale = 1.0",
+     "effort_limit_eval": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_drive_eval_effort_nm (= env.eval_real.hand_effort_nm); mesh_evaluation.nominal_physics writes it to every env in both eval passes",
+     "velocity_limit": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_velocity_limit x STATE_GAIN (PhysX max joint velocity)",
+     "friction_static": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_friction[14]",
+     "friction_dynamic": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_dynamic_friction[14]",
+     "armature": "code_snapshot/isaacsimenvs/tasks/simtoolreal/utils/embodiment.py XARM_ALLEGRO (copied by embodiment_allegro5.XARM_ALLEGRO_V5(_CAL)) hand.armature (assets.hand_armature empty)"
+    }
+   },
+   "joint_15_0": {
+    "axis": [
+     0.0,
+     1.0,
+     0.0
+    ],
+    "range": [
+     -0.028438,
+     1.806618
+    ],
+    "range_source": "prepped URDF <limit> (CAL_HAND_LIMITS = rig raw stops x state gain + offset)",
+    "kind": "hand",
+    "drive": "explicit PD tau = clip(K (q* - q[t-n]) - D qd[t-n], +-effort) every 1/120 s (hand_delay_pd d2)",
+    "stiffness": 0.7240108107435548,
+    "damping": 0.029753868934666635,
+    "effort_limit_eval": 0.17,
+    "effort_limit_training_range": [
+     0.12,
+     0.25
+    ],
+    "velocity_limit": 10.082722373306751,
+    "friction_static": 0.02,
+    "friction_dynamic": 0.016,
+    "armature": 0.001,
+    "state_gain": 1.0082722373306752,
+    "stiffness_raw": 0.73,
+    "damping_raw": 0.03,
+    "sources": {
+     "stiffness": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_stiffness[15] / STATE_GAIN (utils/hand_drive.apply_hand_drive (cal1: K / gain, D / gain, velocity x gain) + utils/hand_delay_pd.py (explicit PD d2))",
+     "damping": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_damping[15] / STATE_GAIN; eval hand damping DR scale env.domain_randomization.hand_damping_eval_scale = 1.0",
+     "effort_limit_eval": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_drive_eval_effort_nm (= env.eval_real.hand_effort_nm); mesh_evaluation.nominal_physics writes it to every env in both eval passes",
+     "velocity_limit": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_velocity_limit x STATE_GAIN (PhysX max joint velocity)",
+     "friction_static": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_friction[15]",
+     "friction_dynamic": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.hand_dynamic_friction[15]",
+     "armature": "code_snapshot/isaacsimenvs/tasks/simtoolreal/utils/embodiment.py XARM_ALLEGRO (copied by embodiment_allegro5.XARM_ALLEGRO_V5(_CAL)) hand.armature (assets.hand_armature empty)"
+    }
+   }
+  },
+  "init_joint_pos": {
+   "joint1": -0.21991149,
+   "joint2": -0.20245819,
+   "joint3": -1.13620934,
+   "joint4": 2.33175988,
+   "joint5": 0.31939525,
+   "joint6": 2.36492114,
+   "joint_0_0": 0.0,
+   "joint_1_0": 1.5190605115997762,
+   "joint_2_0": -0.01016640676088152,
+   "joint_3_0": 0.04268636824628394,
+   "joint_4_0": 0.0,
+   "joint_5_0": 1.567824595623836,
+   "joint_6_0": 0.008660521507263185,
+   "joint_7_0": 0.07208775117993355,
+   "joint_8_0": 0.0,
+   "joint_9_0": 1.5568678724710643,
+   "joint_10_0": 0.011228332296013832,
+   "joint_11_0": 0.04292537465691567,
+   "joint_12_0": 1.24565697,
+   "joint_13_0": 0.05513508,
+   "joint_14_0": 0.23153956,
+   "joint_15_0": -0.023438
+  },
+  "self_collision": {
+   "isaac": "enabled; FilteredPairs {\"link6\": [\"link_1_0\", \"link_5_0\", \"link_9_0\", \"link_13_0\"], \"palm_link\": [\"link_1_0\", \"link_5_0\", \"link_9_0\", \"link_13_0\"], \"link_0_0\": [\"link_4_0\", \"link_12_0\"], \"link_4_0\": [\"link_8_0\"]} + PhysX parent-child",
+   "mujoco": "all robot geoms collide except MuJoCo parent-child (weld-aware) + <exclude> of the same pairs (palm_link added: it is welded into link6)"
+  },
+  "collision": {
+   "arm": "CoACD pieces assets/urdf/xarm_allegro_v5/collision_arm/<link>_c*.obj (embodiment ARM_COLLISION_PIECES), one convex hull each",
+   "hand": "the calibrated hand STLs (palm, new_l1..4, t1..4_set, shared_tip_calibrated), one convex hull each (PhysX convexHull, hullVertexLimit 64) -> qhull TA60 hulls (<= 64 vertices)",
+   "hull_vertex_counts": {
+    "link_base_c0": [
+     60,
+     60
+    ],
+    "link_base_c1": [
+     46,
+     46
+    ],
+    "link_base_c2": [
+     60,
+     60
+    ],
+    "link_base_c3": [
+     31,
+     31
+    ],
+    "link1_c0": [
+     60,
+     60
+    ],
+    "link1_c1": [
+     60,
+     60
+    ],
+    "link1_c2": [
+     60,
+     60
+    ],
+    "link1_c3": [
+     60,
+     60
+    ],
+    "link2_c0": [
+     60,
+     60
+    ],
+    "link2_c1": [
+     60,
+     60
+    ],
+    "link2_c2": [
+     60,
+     60
+    ],
+    "link2_c3": [
+     60,
+     60
+    ],
+    "link2_c4": [
+     60,
+     60
+    ],
+    "link2_c5": [
+     60,
+     60
+    ],
+    "link2_c6": [
+     60,
+     60
+    ],
+    "link2_c7": [
+     60,
+     60
+    ],
+    "link3_c0": [
+     60,
+     60
+    ],
+    "link3_c1": [
+     60,
+     60
+    ],
+    "link3_c2": [
+     60,
+     60
+    ],
+    "link3_c3": [
+     60,
+     60
+    ],
+    "link3_c4": [
+     60,
+     60
+    ],
+    "link3_c5": [
+     60,
+     60
+    ],
+    "link4_c0": [
+     60,
+     60
+    ],
+    "link4_c1": [
+     60,
+     60
+    ],
+    "link4_c2": [
+     60,
+     60
+    ],
+    "link4_c3": [
+     60,
+     60
+    ],
+    "link4_c4": [
+     60,
+     60
+    ],
+    "link4_c5": [
+     60,
+     60
+    ],
+    "link5_c0": [
+     60,
+     60
+    ],
+    "link5_c1": [
+     60,
+     60
+    ],
+    "link5_c2": [
+     60,
+     60
+    ],
+    "link5_c3": [
+     60,
+     60
+    ],
+    "link5_c4": [
+     60,
+     60
+    ],
+    "link6_c0": [
+     60,
+     60
+    ],
+    "link6_c1": [
+     31,
+     31
+    ],
+    "link6_c2": [
+     51,
+     51
+    ],
+    "palm": [
+     143,
+     64
+    ],
+    "new_l1": [
+     577,
+     64
+    ],
+    "new_l2": [
+     330,
+     64
+    ],
+    "new_l3": [
+     423,
+     64
+    ],
+    "new_l4": [
+     654,
+     64
+    ],
+    "shared_tip_calibrated": [
+     1413,
+     64
+    ],
+    "t1_set": [
+     233,
+     64
+    ],
+    "t2_set": [
+     389,
+     64
+    ],
+    "t3_set": [
+     400,
+     64
+    ],
+    "t4_set": [
+     396,
+     64
+    ]
+   }
+  }
+ },
+ "materials": {
+  "isaac": {
+   "robot": 0.5,
+   "fingertip_links": 1.5,
+   "fingertip_link_names": [
+    "link_11_0",
+    "link_11_0_tip",
+    "link_15_0",
+    "link_15_0_tip",
+    "link_3_0",
+    "link_3_0_tip",
+    "link_7_0",
+    "link_7_0_tip"
+   ],
+   "object": 0.5,
+   "table": 0.5,
+   "ground": 0.5,
+   "restitution": 0.0,
+   "combine": "average",
+   "contact_offset": 0.002,
+   "rest_offset": 0.0,
+   "sources": {
+    "friction": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.robot_friction / finger_tip_friction; scene_utils.apply_physx_material_properties gives table + object the robot default (0.5); static = dynamic",
+    "combine": "posedex/runs/r321_*/attempts/000/resolved_config.json env.sim.physics_material.friction_combine_mode",
+    "offsets": "scene_utils._CONTACT_OFFSET / _REST_OFFSET"
+   }
+  },
+  "mujoco": {
+   "robot": 0.5,
+   "fingertip": 1.25,
+   "fingertip_physx_average": 1.0,
+   "object": 0.5,
+   "table": 0.5,
+   "note": "MuJoCo takes max() of the two geoms' friction: fingertip geoms get the PhysX pair average (1.5 + 0.5) / 2 = 1.0 so tip-object / tip-table = 1.0 and every other pair 0.5 as in Isaac"
+  }
+ },
+ "contact_mujoco": {
+  "integrator": "implicitfast",
+  "cone": "elliptic",
+  "impratio": 10,
+  "solver": "Newton",
+  "iterations": 100,
+  "ls_iterations": 50,
+  "tolerance": 1e-08,
+  "ls_tolerance": 0.01,
+  "noslip_iterations": 0,
+  "ccd_iterations": 50,
+  "ccd_tolerance": 1e-06,
+  "solref": "0.008 1",
+  "solimp": "0.9 0.95 0.002 0.5 2",
+  "condim_robot": 3,
+  "condim_tip": 4,
+  "condim_object": 4,
+  "torsional": 0.005,
+  "rolling": 0.0001,
+  "solreflimit": "0.005 1",
+  "solimplimit": "0.95 0.99 0.001 0.5 2",
+  "margin": 0.0,
+  "tuned_by": "agent D sim2sim (sim2sim/README.md); A's original solref 0.005 1, solimp 0.95 0.99 0.001 0.5 2, col_tip friction 1.0",
+  "note": "MuJoCo-only choices (no PhysX equivalent): soft-constraint solref / solimp, condim 4 (torsional friction) on fingertip and object geoms to stand in for PhysX patch friction, elliptic cones + impratio 10, multiccd on (several contacts per convex pair). Edit the <default> classes col_robot / col_tip / col_object / col_world of a scene to tune."
+ },
+ "table": {
+  "size": [
+   1.1,
+   0.8,
+   0.3
+  ],
+  "center": [
+   0.0,
+   -0.05,
+   0.38
+  ],
+  "top_z": 0.53,
+  "kinematic": true,
+  "sources": "posedex/runs/r321_*/attempts/000/resolved_config.json env.assets.table_urdf (assets/urdf/table_rig_mainpc.urdf box 1.1 x 0.8 x 0.3), env.assets.table_center_xy_m, env.reset.table_reset_z (+- table_reset_z_range 0.01 jitter per episode in Isaac, nominal here)"
+ },
+ "object": {
+  "mass": "URDF <inertial> mass = index mass_kg (nominal: the periodic evaluation restores it over the training draw log-uniform [0.015, 0.5] kg, physics_dr / mesh_evaluation.nominal_physics)",
+  "inertia": "URDF full inertia tensor at the URDF COM",
+  "collision": "coacd/part_*.obj, one convex hull each (object_collider_type convex_hull)",
+  "visual": "sim_mesh.obj",
+  "gravity": true,
+  "spawn_xy": [
+   0.05,
+   0.0
+  ],
+  "home_pose": "most probable stable_poses_v3.npz pose at the spawn centre, 2 mm above its resting height"
+ },
+ "names": {
+  "joints_canonical": [
+   "joint1",
+   "joint2",
+   "joint3",
+   "joint4",
+   "joint5",
+   "joint6",
+   "joint_0_0",
+   "joint_1_0",
+   "joint_2_0",
+   "joint_3_0",
+   "joint_4_0",
+   "joint_5_0",
+   "joint_6_0",
+   "joint_7_0",
+   "joint_8_0",
+   "joint_9_0",
+   "joint_10_0",
+   "joint_11_0",
+   "joint_12_0",
+   "joint_13_0",
+   "joint_14_0",
+   "joint_15_0"
+  ],
+  "actuators": [
+   "joint1",
+   "joint2",
+   "joint3",
+   "joint4",
+   "joint5",
+   "joint6",
+   "joint_0_0",
+   "joint_1_0",
+   "joint_2_0",
+   "joint_3_0",
+   "joint_4_0",
+   "joint_5_0",
+   "joint_6_0",
+   "joint_7_0",
+   "joint_8_0",
+   "joint_9_0",
+   "joint_10_0",
+   "joint_11_0",
+   "joint_12_0",
+   "joint_13_0",
+   "joint_14_0",
+   "joint_15_0"
+  ],
+  "qpos_robot": "qpos[0:22] canonical order",
+  "qpos_object": "qpos[22:29] object_root freejoint (pos xyz world, quat wxyz)",
+  "qvel_object": "qvel[22:28]: linear velocity of the body origin (world frame), angular velocity in the BODY frame (MuJoCo freejoint convention); Isaac reports world-frame angular velocity and the COM linear velocity",
+  "palm_body": "link6",
+  "palm_sites": {
+   "palm_center": [
+    -0.000402822,
+    -0.01270504,
+    0.126175931
+   ],
+   "palm_surface": [
+    -0.000678656,
+    -0.020678878,
+    0.096772371
+   ]
+  },
+  "fingertip_bodies": [
+   "link_3_0",
+   "link_7_0",
+   "link_11_0",
+   "link_15_0"
+  ],
+  "pad_sites": [
+   "pad_index",
+   "pad_middle",
+   "pad_ring",
+   "pad_thumb"
+  ],
+  "pad_offsets": [
+   [
+    0.000168834,
+    -0.000886207,
+    0.040755136
+   ],
+   [
+    0.000168834,
+    -0.000886207,
+    0.040755136
+   ],
+   [
+    0.000168834,
+    -0.000886207,
+    0.040755136
+   ],
+   [
+    -8.7614e-05,
+    -0.000522227,
+    0.051505136
+   ]
+  ],
+  "fingertip_pad_radius_m": 0.014,
+  "hand_surface_sites": [
+   "hs_00",
+   "hs_01",
+   "hs_02",
+   "hs_03",
+   "hs_04",
+   "hs_05",
+   "hs_06",
+   "hs_07",
+   "hs_08",
+   "hs_09",
+   "hs_10",
+   "hs_11",
+   "hs_12",
+   "hs_13",
+   "hs_14",
+   "hs_15",
+   "hs_16"
+  ],
+  "hand_surface_layout": "hs_00 palm centre; per finger f (index, middle, ring, thumb): hs_{1+4f..3+4f} link origins [('link_1_0', 'link_2_0', 'link_3_0'), ('link_5_0', 'link_6_0', 'link_7_0'), ('link_9_0', 'link_10_0', 'link_11_0'), ('link_12_0', 'link_14_0', 'link_15_0')], hs_{4+4f} pad",
+  "object_body": "object",
+  "object_joint": "object_root",
+  "goal_body": "goal (mocap)",
+  "table_body": "table",
+  "table_top_site": "table_top",
+  "merged_in_isaac": {
+   "link6": [
+    "wrist",
+    "palm_link"
+   ],
+   "link_3_0": [
+    "link_3_0_tip"
+   ],
+   "link_7_0": [
+    "link_7_0_tip"
+   ],
+   "link_11_0": [
+    "link_11_0_tip"
+   ],
+   "link_15_0": [
+    "link_15_0_tip"
+   ]
+  }
+ },
+ "isaac_readback": "see checks/CHECKS.md and checks/out/isaac_dump.json (joint gains / limits / armature / friction / masses read back from PhysX on GPU 4)",
+ "known_gaps": [
+  "PhysX max joint velocity (arm 3.14 rad/s, hand 10 x gain rad/s) is a solver constraint; MuJoCo has none. mjsim.VelocityClamp (post-step clip, hand joints by default) reproduces the hand limit; do not clip the arm that way (saturated arm drives). Large arm steps (>~0.1 rad, joint4 / joint6) therefore run faster in MuJoCo 3.16 than in Isaac (joint6 0.3 rad step: t90 25-33 ms vs 117 ms); the policy's arm targets move <= 0.15 rad/s, where both agree to < 1 mrad.",
+  "PhysX joint friction is static 0.02 / dynamic 0.016 Nm (hand) and sticks hard; MuJoCo frictionloss is one soft value (0.02): hand steady-state errors after a step are 11 vs 19-21 mrad (thumb) / 1.5 vs 10.6 mrad (index DIP), MuJoCo vs Isaac.",
+  "hand_actuator=position computes the hand PD at the MuJoCo timestep without the Isaac substep zero-order hold or the real-pass delay n=2; use motor hand actuators (mjsim.load_model(..., hand='motor')) + hand_pd.HandDelayPD for the exact explicit delayed PD (needed for the 'real' evaluation condition, n = 2).",
+  "PhysX TGS rigid contacts (8 position iterations, 2 mm contact offset, patch friction) vs MuJoCo soft contacts (condim 4 on tips / objects, elliptic cones, impratio 10): no equivalent; sim2sim (agent D) tuned solref / solimp and the fingertip friction (TUNED_CONTACT) until lift / acquisition / goals / drops / in-hand re-acquisition match Isaac within noise.",
+  "PhysX's vertex-limited (64) convex hulls are approximated by qhull TA60 (same incremental idea, not bit-identical); the fingertip pad point is 12.4 mm inside the 64-vertex tip hull (14.0 mm inside the full hull, the env's fingertip_pad_radius).",
+  "Table height: Isaac jitters the table centre z by +-1 cm per episode (also in evaluation); the scene uses the nominal 0.38."
+ ],
+ "objects": {
+  "vx_004_sugar_box": {
+   "mass_kg": 0.26089,
+   "com": [
+    -0.000355434,
+    -6.6209e-05,
+    -0.001120044
+   ],
+   "parts": 4,
+   "part_vertices": [
+    64,
+    64,
+    64,
+    64
+   ],
+   "stable_pose_index": 0,
+   "rest_z": 0.5518896342916287,
+   "home_object_pos": [
+    0.05,
+    0.0,
+    0.5538896342916287
+   ],
+   "home_object_quat_wxyz": [
+    0.5130707638675287,
+    -0.5027352933583804,
+    -0.486912341802779,
+    -0.4969225165721391
+   ],
+   "urdf": "posedex/assets/hrdex/vx_004_sugar_box/vx_004_sugar_box.urdf",
+   "split": "train",
+   "scene": "posedex/web_demo/mjcf/scenes/vx_004_sugar_box.xml"
+  },
+  "vx_002_master_chef_can": {
+   "mass_kg": 0.446915,
+   "com": [
+    -0.000317392,
+    5.0201e-05,
+    0.000235882
+   ],
+   "parts": 32,
+   "part_vertices": [
+    46,
+    49,
+    42,
+    26,
+    21,
+    29,
+    24,
+    27,
+    14,
+    34,
+    28,
+    35,
+    13,
+    40,
+    12,
+    27,
+    40,
+    11,
+    14,
+    40,
+    38,
+    27,
+    43,
+    40,
+    34,
+    33,
+    17,
+    25,
+    38,
+    37,
+    24,
+    24
+   ],
+   "stable_pose_index": 0,
+   "rest_z": 0.5996354067229551,
+   "home_object_pos": [
+    0.05,
+    0.0,
+    0.6016354067229551
+   ],
+   "home_object_quat_wxyz": [
+    0.0024940306704199357,
+    -0.6246949083630658,
+    0.7808587147992518,
+    0.0031174987308239276
+   ],
+   "urdf": "posedex/assets/hrdex/vx_002_master_chef_can/vx_002_master_chef_can.urdf",
+   "split": "train",
+   "scene": "posedex/web_demo/mjcf/scenes/vx_002_master_chef_can.xml"
+  },
+  "vx_005_tomato_soup_can": {
+   "mass_kg": 0.139342,
+   "com": [
+    -0.000312725,
+    -1.2716e-05,
+    0.000235437
+   ],
+   "parts": 32,
+   "part_vertices": [
+    64,
+    64,
+    63,
+    64,
+    63,
+    64,
+    62,
+    64,
+    11,
+    28,
+    63,
+    64,
+    64,
+    64,
+    64,
+    41,
+    28,
+    64,
+    21,
+    63,
+    39,
+    63,
+    37,
+    41,
+    14,
+    64,
+    63,
+    64,
+    64,
+    20,
+    54,
+    63
+   ],
+   "stable_pose_index": 0,
+   "rest_z": 0.5806433729955954,
+   "home_object_pos": [
+    0.05,
+    0.0,
+    0.5826433729955954
+   ],
+   "home_object_quat_wxyz": [
+    0.004177901549727548,
+    -0.5524495377060952,
+    0.8335120395652117,
+    0.006303437697270149
+   ],
+   "urdf": "posedex/assets/hrdex/vx_005_tomato_soup_can/vx_005_tomato_soup_can.urdf",
+   "split": "train",
+   "scene": "posedex/web_demo/mjcf/scenes/vx_005_tomato_soup_can.xml"
+  },
+  "vx_006_mustard_bottle": {
+   "mass_kg": 0.277231,
+   "com": [
+    0.000397408,
+    0.000340155,
+    -0.015897561
+   ],
+   "parts": 7,
+   "part_vertices": [
+    64,
+    40,
+    64,
+    64,
+    64,
+    64,
+    64
+   ],
+   "stable_pose_index": 0,
+   "rest_z": 0.5576794237776816,
+   "home_object_pos": [
+    0.05,
+    0.0,
+    0.5596794237776817
+   ],
+   "home_object_quat_wxyz": [
+    0.12529942243000233,
+    -0.12649149196291024,
+    -0.6990952432425322,
+    -0.6925068938829197
+   ],
+   "urdf": "posedex/assets/hrdex/vx_006_mustard_bottle/vx_006_mustard_bottle.urdf",
+   "split": "train",
+   "scene": "posedex/web_demo/mjcf/scenes/vx_006_mustard_bottle.xml"
+  },
+  "vx_007_tuna_fish_can": {
+   "mass_kg": 0.072357,
+   "com": [
+    8.1549e-05,
+    -4.9944e-05,
+    5.3447e-05
+   ],
+   "parts": 32,
+   "part_vertices": [
+    14,
+    13,
+    13,
+    43,
+    11,
+    26,
+    48,
+    24,
+    42,
+    37,
+    22,
+    33,
+    32,
+    42,
+    15,
+    22,
+    64,
+    20,
+    36,
+    31,
+    27,
+    33,
+    39,
+    24,
+    63,
+    49,
+    28,
+    23,
+    36,
+    43,
+    31,
+    39
+   ],
+   "stable_pose_index": 0,
+   "rest_z": 0.5465636062160304,
+   "home_object_pos": [
+    0.05,
+    0.0,
+    0.5485636062160304
+   ],
+   "home_object_quat_wxyz": [
+    0.5976382211529434,
+    -0.0007111765014398675,
+    -0.000954082953091568,
+    -0.8017650158062822
+   ],
+   "urdf": "posedex/assets/hrdex/vx_007_tuna_fish_can/vx_007_tuna_fish_can.urdf",
+   "split": "train",
+   "scene": "posedex/web_demo/mjcf/scenes/vx_007_tuna_fish_can.xml"
+  },
+  "vx_008_pudding_box": {
+   "mass_kg": 0.138765,
+   "com": [
+    0.00071429,
+    -0.000184916,
+    -0.000365742
+   ],
+   "parts": 5,
+   "part_vertices": [
+    64,
+    62,
+    64,
+    64,
+    64
+   ],
+   "stable_pose_index": 0,
+   "rest_z": 0.5491131164873587,
+   "home_object_pos": [
+    0.05,
+    0.0,
+    0.5511131164873587
+   ],
+   "home_object_quat_wxyz": [
+    0.9440264886143432,
+    -0.002573048602639078,
+    -0.0008990655338844013,
+    -0.32985839370330944
+   ],
+   "urdf": "posedex/assets/hrdex/vx_008_pudding_box/vx_008_pudding_box.urdf",
+   "split": "train",
+   "scene": "posedex/web_demo/mjcf/scenes/vx_008_pudding_box.xml"
+  },
+  "vx_009_gelatin_box": {
+   "mass_kg": 0.070526,
+   "com": [
+    0.000226814,
+    0.00015792,
+    -0.000444405
+   ],
+   "parts": 4,
+   "part_vertices": [
+    64,
+    64,
+    64,
+    64
+   ],
+   "stable_pose_index": 0,
+   "rest_z": 0.5439837779000608,
+   "home_object_pos": [
+    0.05,
+    0.0,
+    0.5459837779000608
+   ],
+   "home_object_quat_wxyz": [
+    0.00489401107459098,
+    -0.9612622702175336,
+    -0.2755883304229065,
+    -0.001403084655358963
+   ],
+   "urdf": "posedex/assets/hrdex/vx_009_gelatin_box/vx_009_gelatin_box.urdf",
+   "split": "train",
+   "scene": "posedex/web_demo/mjcf/scenes/vx_009_gelatin_box.xml"
+  },
+  "vx_010_potted_meat_can": {
+   "mass_kg": 0.164434,
+   "com": [
+    -0.000148747,
+    0.000384752,
+    0.001310355
+   ],
+   "parts": 32,
+   "part_vertices": [
+    35,
+    23,
+    11,
+    43,
+    28,
+    18,
+    8,
+    48,
+    17,
+    9,
+    41,
+    26,
+    39,
+    9,
+    30,
+    40,
+    32,
+    24,
+    17,
+    13,
+    44,
+    18,
+    32,
+    23,
+    42,
+    11,
+    45,
+    16,
+    23,
+    18,
+    18,
+    21
+   ],
+   "stable_pose_index": 0,
+   "rest_z": 0.5566802123530472,
+   "home_object_pos": [
+    0.05,
+    0.0,
+    0.5586802123530472
+   ],
+   "home_object_quat_wxyz": [
+    0.018934577272999107,
+    -0.01820215476053788,
+    0.692787146229334,
+    0.7206636756247546
+   ],
+   "urdf": "posedex/assets/hrdex/vx_010_potted_meat_can/vx_010_potted_meat_can.urdf",
+   "split": "train",
+   "scene": "posedex/web_demo/mjcf/scenes/vx_010_potted_meat_can.xml"
+  },
+  "vx_011_banana": {
+   "mass_kg": 0.103225,
+   "com": [
+    -0.012387716,
+    0.012408269,
+    -0.002603125
+   ],
+   "parts": 5,
+   "part_vertices": [
+    42,
+    64,
+    64,
+    64,
+    35
+   ],
+   "stable_pose_index": 0,
+   "rest_z": 0.536433602141124,
+   "home_object_pos": [
+    0.05,
+    0.0,
+    0.538433602141124
+   ],
+   "home_object_quat_wxyz": [
+    0.13423307073830779,
+    -0.5598208125767791,
+    0.7951306085621376,
+    0.19065533261265952
+   ],
+   "urdf": "posedex/assets/hrdex/vx_011_banana/vx_011_banana.urdf",
+   "split": "train",
+   "scene": "posedex/web_demo/mjcf/scenes/vx_011_banana.xml"
+  },
+  "vx_021_bleach_cleanser": {
+   "mass_kg": 0.424156,
+   "com": [
+    0.004172575,
+    -6.5898e-05,
+    -0.022407319
+   ],
+   "parts": 6,
+   "part_vertices": [
+    62,
+    63,
+    32,
+    56,
+    64,
+    64
+   ],
+   "stable_pose_index": 0,
+   "rest_z": 0.5593883526947515,
+   "home_object_pos": [
+    0.05,
+    0.0,
+    0.5613883526947515
+   ],
+   "home_object_quat_wxyz": [
+    0.0015985038549548118,
+    -0.0016580461855348232,
+    -0.7199131951002798,
+    -0.6940602907448162
+   ],
+   "urdf": "posedex/assets/hrdex/vx_021_bleach_cleanser/vx_021_bleach_cleanser.urdf",
+   "split": "train",
+   "scene": "posedex/web_demo/mjcf/scenes/vx_021_bleach_cleanser.xml"
+  },
+  "vx_025_mug": {
+   "mass_kg": 0.205887,
+   "com": [
+    -0.007101001,
+    -0.000690892,
+    0.002022284
+   ],
+   "parts": 32,
+   "part_vertices": [
+    64,
+    63,
+    64,
+    64,
+    64,
+    64,
+    64,
+    64,
+    64,
+    64,
+    61,
+    62,
+    64,
+    64,
+    61,
+    64,
+    64,
+    64,
+    64,
+    64,
+    64,
+    64,
+    63,
+    63,
+    64,
+    64,
+    64,
+    64,
+    63,
+    64,
+    63,
+    64
+   ],
+   "stable_pose_index": 0,
+   "rest_z": 0.5674477757276455,
+   "home_object_pos": [
+    0.05,
+    0.0,
+    0.5694477757276455
+   ],
+   "home_object_quat_wxyz": [
+    0.19816918501727232,
+    -0.1840698673527476,
+    0.6551963652044431,
+    0.7053828613350469
+   ],
+   "urdf": "posedex/assets/hrdex/vx_025_mug/vx_025_mug.urdf",
+   "split": "train",
+   "scene": "posedex/web_demo/mjcf/scenes/vx_025_mug.xml"
+  },
+  "vx_036_wood_block": {
+   "mass_kg": 0.637003,
+   "com": [
+    -0.000443545,
+    -0.000278932,
+    -8.7357e-05
+   ],
+   "parts": 4,
+   "part_vertices": [
+    64,
+    64,
+    63,
+    64
+   ],
+   "stable_pose_index": 0,
+   "rest_z": 0.5734048319359057,
+   "home_object_pos": [
+    0.05,
+    0.0,
+    0.5754048319359057
+   ],
+   "home_object_quat_wxyz": [
+    0.7017663725270162,
+    -0.7035358057610026,
+    0.07935036420239573,
+    0.07915079344793105
+   ],
+   "urdf": "posedex/assets/hrdex/vx_036_wood_block/vx_036_wood_block.urdf",
+   "split": "train",
+   "scene": "posedex/web_demo/mjcf/scenes/vx_036_wood_block.xml"
+  },
+  "vx_037_scissors": {
+   "mass_kg": 0.048195,
+   "com": [
+    0.005988823,
+    -0.028695562,
+    1.8083e-05
+   ],
+   "parts": 21,
+   "part_vertices": [
+    58,
+    54,
+    54,
+    47,
+    39,
+    40,
+    39,
+    53,
+    45,
+    44,
+    32,
+    42,
+    32,
+    50,
+    58,
+    48,
+    32,
+    37,
+    47,
+    36,
+    18
+   ],
+   "stable_pose_index": 0,
+   "rest_z": 0.5369434256254259,
+   "home_object_pos": [
+    0.05,
+    0.0,
+    0.5389434256254259
+   ],
+   "home_object_quat_wxyz": [
+    0.9758187017359001,
+    -0.0042207540840022584,
+    0.0009452555163772906,
+    0.21853867636972996
+   ],
+   "urdf": "posedex/assets/hrdex/vx_037_scissors/vx_037_scissors.urdf",
+   "split": "train",
+   "scene": "posedex/web_demo/mjcf/scenes/vx_037_scissors.xml"
+  },
+  "vx_051_large_clamp": {
+   "mass_kg": 0.146429,
+   "com": [
+    0.008208434,
+    0.009416286,
+    -0.000468628
+   ],
+   "parts": 32,
+   "part_vertices": [
+    64,
+    64,
+    63,
+    64,
+    64,
+    64,
+    64,
+    63,
+    60,
+    63,
+    64,
+    64,
+    64,
+    64,
+    64,
+    63,
+    64,
+    64,
+    64,
+    64,
+    45,
+    64,
+    64,
+    64,
+    64,
+    64,
+    64,
+    64,
+    64,
+    64,
+    64,
+    59
+   ],
+   "stable_pose_index": 0,
+   "rest_z": 0.5481077674238489,
+   "home_object_pos": [
+    0.05,
+    0.0,
+    0.5501077674238489
+   ],
+   "home_object_quat_wxyz": [
+    0.024438591595996543,
+    -0.790742171613397,
+    0.611369409933578,
+    0.018894916522748627
+   ],
+   "urdf": "posedex/assets/hrdex/vx_051_large_clamp/vx_051_large_clamp.urdf",
+   "split": "train",
+   "scene": "posedex/web_demo/mjcf/scenes/vx_051_large_clamp.xml"
+  },
+  "vx_061_foam_brick": {
+   "mass_kg": 0.077636,
+   "com": [
+    -0.000353362,
+    -0.000188405,
+    -0.000165769
+   ],
+   "parts": 32,
+   "part_vertices": [
+    42,
+    28,
+    36,
+    27,
+    52,
+    18,
+    18,
+    37,
+    63,
+    23,
+    39,
+    35,
+    46,
+    23,
+    35,
+    15,
+    29,
+    27,
+    62,
+    29,
+    42,
+    15,
+    40,
+    20,
+    47,
+    42,
+    30,
+    26,
+    16,
+    32,
+    51,
+    17
+   ],
+   "stable_pose_index": 0,
+   "rest_z": 0.5553740328024463,
+   "home_object_pos": [
+    0.05,
+    0.0,
+    0.5573740328024464
+   ],
+   "home_object_quat_wxyz": [
+    0.9061610264408233,
+    -0.001665804733171166,
+    0.0007774742730470838,
+    0.4229288531042296
+   ],
+   "urdf": "posedex/assets/hrdex/vx_061_foam_brick/vx_061_foam_brick.urdf",
+   "split": "train",
+   "scene": "posedex/web_demo/mjcf/scenes/vx_061_foam_brick.xml"
+  }
+ },
+ "isaac_readback_values": {
+  "source": "checks/isaac_dump.py on GPU 4 (r321 config, ideal evaluation conditions: begin_eval(real=False))",
+  "joint_names_lab_order": [
+   "joint1",
+   "joint2",
+   "joint3",
+   "joint4",
+   "joint5",
+   "joint6",
+   "joint_0_0",
+   "joint_12_0",
+   "joint_4_0",
+   "joint_8_0",
+   "joint_1_0",
+   "joint_13_0",
+   "joint_5_0",
+   "joint_9_0",
+   "joint_2_0",
+   "joint_14_0",
+   "joint_6_0",
+   "joint_10_0",
+   "joint_3_0",
+   "joint_15_0",
+   "joint_7_0",
+   "joint_11_0"
+  ],
+  "body_names_lab_order": [
+   "link_base",
+   "link1",
+   "link2",
+   "link3",
+   "link4",
+   "link5",
+   "link6",
+   "link_0_0",
+   "link_12_0",
+   "link_4_0",
+   "link_8_0",
+   "link_1_0",
+   "link_13_0",
+   "link_5_0",
+   "link_9_0",
+   "link_2_0",
+   "link_14_0",
+   "link_6_0",
+   "link_10_0",
+   "link_3_0",
+   "link_15_0",
+   "link_7_0",
+   "link_11_0"
+  ],
+  "physics_dt": 0.008333333333333333,
+  "decimation": 4,
+  "step_dt": 0.03333333333333333,
+  "robot_root_pose_wxyz": [
+   0.0,
+   0.5,
+   0.5299999713897705,
+   -0.7071068286895752,
+   1.022262829941667e-10,
+   -1.9904772274870197e-11,
+   0.7071068286895752
+  ],
+  "table_pose": [
+   0.0,
+   -0.05000019073486328,
+   0.3805035352706909,
+   1.0,
+   0.0,
+   0.0,
+   0.0
+  ],
+  "table_z_jitter_samples": [
+   0.3805035352706909,
+   0.3768443465232849,
+   0.37820184230804443,
+   0.38793468475341797
+  ],
+  "hand_explicit_pd": {
+   "stiffness": [
+    1.026016354560852,
+    0.473407119512558,
+    1.025331735610962,
+    1.1499404907226562,
+    1.133711576461792,
+    0.46129950881004333,
+    1.0135037899017334,
+    1.0880427360534668,
+    1.0633559226989746,
+    0.46631938219070435,
+    1.0175780057907104,
+    1.0550283193588257,
+    0.7300000190734863,
+    0.7300000190734863,
+    0.7300000190734863,
+    0.7240108251571655
+   ],
+   "damping": [
+    0.046170737594366074,
+    0.07204021513462067,
+    0.046139929443597794,
+    0.05174732580780983,
+    0.051017023622989655,
+    0.07019775360822678,
+    0.04560767114162445,
+    0.04896192252635956,
+    0.047851018607616425,
+    0.07096164673566818,
+    0.045791011303663254,
+    0.04747627303004265,
+    0.029999999329447746,
+    0.029999999329447746,
+    0.029999999329447746,
+    0.029753869399428368
+   ],
+   "n": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "joint_ids": [
+    6,
+    10,
+    14,
+    18,
+    8,
+    12,
+    16,
+    20,
+    9,
+    13,
+    17,
+    21,
+    7,
+    11,
+    15,
+    19
+   ]
+  },
+  "hand_damping_eval_scale": [
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ],
+  "robot_shape_friction_values": [
+   0.5,
+   1.5
+  ],
+  "robot_shapes_with_tip_friction": 8,
+  "robot_shapes": 57,
+  "object_material": [
+   0.5,
+   0.5,
+   0.0
+  ],
+  "table_material": [
+   0.5,
+   0.5,
+   0.0
+  ],
+  "checks": {
+   "compared": 197,
+   "mismatches": []
+  }
+ }
+}

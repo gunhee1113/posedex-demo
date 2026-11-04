@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PoseDex Sim Demo</title>
+<meta name="description" content="A trained xArm6 + Allegro policy reaching 6D object goals, running in your browser (MuJoCo WASM + three.js + onnxruntime-web).">
+<link rel="stylesheet" href="css/app.css">
+<script type="importmap">
+{
+  "imports": {
+    "three": "./vendor/three/three.module.js",
+    "three/addons/": "./vendor/three/addons/"
+  }
+}
+</script>
+</head>
+<body>
+<div id="app">
+  <main id="stage">
+    <canvas id="view" tabindex="0" aria-label="3D view of the simulation"></canvas>
+    <div id="hud" hidden>
+      <span class="chip" id="hud-phase" title="Phase: L = lift, A = acquire the point, G = point held">L</span>
+      <span class="chip" id="hud-held">resting</span>
+      <span class="chip" id="hud-err">–</span>
+      <span class="chip" id="hud-succ">0 goals</span>
+      <span class="chip" id="hud-note" hidden></span>
+      <span class="chip warn" id="hud-rt" hidden></span>
+    </div>
+    <div id="toolbar" hidden role="toolbar" aria-label="Modes">
+      <button id="tb-live" class="tool" title="Live goal: the goal follows the gizmo / keys at once (V toggles Send mode)">Live goal <kbd>V</kbd></button>
+      <button id="tb-point" class="tool" title="Point mode: hover the object to preview, click to apply, drag to slide (P)">Point <kbd>P</kbd></button>
+      <button id="tb-push" class="tool" title="Push mode: drag the object to push it; Shift+drag always pushes (M)">Push <kbd>M</kbd></button>
+      <button id="tb-gizmo" class="tool" title="Goal gizmo on / off (G); T switches move / rotate">Gizmo <kbd>G</kbd></button>
+      <button id="tb-follow" class="tool" title="Camera follows the object (F)">Follow <kbd>F</kbd></button>
+      <button id="tb-home" class="tool" title="Reset the camera (0)">View <kbd>0</kbd></button>
+      <button id="tb-keys" class="tool" title="Show / hide the key legend (H or ?)">Keys <kbd>H</kbd></button>
+    </div>
+    <div id="mode-hint" hidden></div>
+    <div id="banner" hidden role="status"></div>
+    <div id="legend" hidden aria-label="Keyboard shortcuts">
+      <div class="legend-head"><b>Keys</b><button id="legend-close" class="ghost" title="Hide (H)" aria-label="Hide the key legend">✕</button></div>
+      <div class="legend-grid">
+        <div><h4>Simulation</h4>
+          <p><kbd>Space</kbd> pause / resume</p><p><kbd>.</kbd> single step</p><p><kbd>Backspace</kbd> reset episode</p>
+          <p><kbd>N</kbd> / <kbd>⇧N</kbd> next / previous object</p><p><kbd>W A S D</kbd> teleport object</p>
+          <p><kbd>M</kbd> push mode · <kbd>B</kbd> random kick</p><p><kbd>Z</kbd> episode end: reset / refresh / none</p></div>
+        <div><h4>Goal</h4>
+          <p><kbd>V</kbd> live goal / Send mode</p><p><kbd>← →</kbd> x · <kbd>[ ]</kbd> y · <kbd>↑ ↓</kbd> z</p>
+          <p><kbd>Q E</kbd> yaw · <kbd>I K</kbd> pitch · <kbd>J L</kbd> roll</p><p><kbd>G</kbd> gizmo · <kbd>T</kbd> move / rotate</p>
+          <p><kbd>R</kbd> random goal</p><p><kbd>Enter</kbd> send · <kbd>Esc</kbd> discard (Send mode)</p></div>
+        <div><h4>Point &amp; view</h4>
+          <p><kbd>P</kbd> point mode · <kbd>⇧P</kbd> random point</p><p><kbd>C</kbd> coupled goal on point change</p>
+          <p><kbd>F</kbd> follow object · <kbd>0</kbd> reset view</p><p><kbd>X</kbd> axes · <kbd>H</kbd> / <kbd>?</kbd> this legend</p>
+          <p class="muted">Drag: orbit · right-drag: pan · wheel: zoom · Shift+drag object: push</p></div>
+      </div>
+    </div>
+    <div id="loading">
+      <div class="load-card">
+        <div class="load-title">PoseDex sim demo</div>
+        <div id="status">Starting…</div>
+        <div class="bar"><div id="bar-fill"></div></div>
+        <div id="load-note" class="muted">MuJoCo + policy run locally in your browser.</div>
+      </div>
+    </div>
+  </main>
+
+  <aside id="panel" aria-label="Controls">
+    <header class="panel-head">
+      <div>
+        <div class="title">PoseDex sim demo</div>
+        <div class="muted small" id="policy-name">policy: –</div>
+      </div>
+      <button id="panel-toggle" class="ghost" aria-label="Collapse panel" title="Collapse panel">⟩</button>
+    </header>
+
+    <section>
+      <h3>Object &amp; simulation</h3>
+      <label class="row"><span>Object</span><select id="object" title="Next / previous object: N / Shift+N"></select></label>
+      <div class="row btns">
+        <button id="play" disabled title="Pause / resume (Space)">Pause</button>
+        <button id="step" disabled title="Single step (.)">Step</button>
+        <button id="reset" disabled title="Reset episode (Backspace)">Reset</button>
+      </div>
+      <label class="row"><span>Speed</span>
+        <select id="speed"><option value="0.25">0.25×</option><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select>
+      </label>
+      <label class="row"><span>Conditions</span>
+        <select id="conditions" title="ideal: no delays / noise. real: 20 Hz tracker pose (latency + noise), 1-step obs and action delays (STATE_SCHEMA 6)">
+          <option value="ideal">ideal</option><option value="real">real (tracker + delays)</option></select>
+      </label>
+      <label class="row"><span>Policy</span><select id="policy"></select></label>
+      <label class="row"><span>Hand drive</span>
+        <select id="hand-drive" title="position servo: the scene's hand actuators. Isaac delayed PD: r321's explicit hand PD every 1/120 s, 0.17 Nm, 2-substep delay in 'real' (agent A's hand_pd.py)">
+          <option value="servo">position servo (scene)</option><option value="isaac_pd">Isaac delayed PD</option></select>
+      </label>
+    </section>
+
+    <section>
+      <h3>Goal</h3>
+      <label class="row"><span>Mode</span>
+        <select id="goal-mode" title="Live: the goal follows the gizmo, keys and fields every control step. Send: edit a draft, then Send (V toggles)">
+          <option value="live">live (applies at once)</option><option value="send">draft + Send</option></select>
+      </label>
+      <div class="row btns">
+        <button id="gizmo-toggle" title="Gizmo on / off (G)">Gizmo</button>
+        <button id="gizmo-mode" title="Move / rotate (T)">Move</button>
+        <button id="goal-random" title="Random goal, applied at once (R)">Random</button>
+      </div>
+      <div class="grid3" id="goal-fields">
+        <label>x cm<input type="number" step="0.5" id="gx"></label>
+        <label>y cm<input type="number" step="0.5" id="gy"></label>
+        <label>z cm<input type="number" step="0.5" id="gz"></label>
+        <label>roll°<input type="number" step="5" id="groll"></label>
+        <label>pitch°<input type="number" step="5" id="gpitch"></label>
+        <label>yaw°<input type="number" step="5" id="gyaw"></label>
+      </div>
+      <div class="nudges">
+        <button data-n="x-" title="← key">x−</button><button data-n="x+" title="→ key">x+</button>
+        <button data-n="y-" title="[ key">y−</button><button data-n="y+" title="] key">y+</button>
+        <button data-n="z-" title="↓ key">z−</button><button data-n="z+" title="↑ key">z+</button>
+        <button data-n="roll-" title="J key">roll−</button><button data-n="roll+" title="L key">roll+</button>
+        <button data-n="pitch-" title="K key">pitch−</button><button data-n="pitch+" title="I key">pitch+</button>
+        <button data-n="yaw-" title="Q key">yaw−</button><button data-n="yaw+" title="E key">yaw+</button>
+      </div>
+      <div class="row small"><span>Step</span>
+        <select id="step-m"><option value="0.005">0.5 cm</option><option value="0.01" selected>1 cm</option><option value="0.02">2 cm</option></select>
+        <select id="step-deg"><option value="5">5°</option><option value="10" selected>10°</option><option value="15">15°</option></select>
+      </div>
+      <div id="check" class="check muted small">Live goal: drag the gizmo or use the keys.</div>
+      <label class="row small" id="allow-soft-row"><input type="checkbox" id="allow-soft"> Allow out-of-training-range goal (Send mode)</label>
+      <label class="row small"><input type="checkbox" id="show-box"> Show goal box</label>
+      <div class="row btns" id="send-row">
+        <button id="send" class="primary" disabled title="Send the draft goal (Enter)">Send goal</button>
+        <button id="discard" disabled title="Discard the draft (Esc)">Discard</button>
+      </div>
+    </section>
+
+    <section>
+      <h3>Affordance point</h3>
+      <div class="muted small">Point mode: hover the object to preview the nearest candidate point, click to apply it, drag across the
+        surface to slide it.</div>
+      <div class="row small"><span>Active</span><span id="point-info">–</span></div>
+      <div class="row btns">
+        <button id="point-mode" title="Point mode on / off (P)">Point mode</button>
+        <button id="point-random" title="Random point, applied at once (Shift+P)">Random point</button>
+      </div>
+      <label class="row small"><input type="checkbox" id="coupled" checked> Coupled goal on in-hand point change (C)</label>
+    </section>
+
+    <section>
+      <h3>Episode</h3>
+      <label class="row"><span>After success</span>
+        <select id="after-success" title="auto: your goals are held, the env's own goals follow the evaluation rule (next delta / coupled goal, a point switch with p = 0.3)">
+          <option value="auto">auto (hold yours, eval rule for env goals)</option><option value="hold">hold goal and point</option>
+          <option value="next">next goal from env (no switch)</option><option value="eval_rule">eval rule: next goal + point switch (p 0.3)</option></select>
+      </label>
+      <label class="row small"><input type="checkbox" id="keep-reset" checked> Keep goal / point after reset</label>
+      <label class="row"><span>Episode end</span>
+        <select id="episode-end" title="What happens on r321's episode ends (20 s without a goal, a drop during an in-hand switch, 50 successes, a fall): reset like training / evaluation, or keep the scene and refresh only the policy memory, or none (falls always reset). Z cycles">
+          <option value="train">reset (training rules)</option><option value="refresh">memory refresh (keep scene)</option>
+          <option value="off">none (endless episode)</option></select>
+      </label>
+      <label class="row small"><input type="checkbox" id="drag-push"> Push mode: dragging the object pushes it (M; Shift+drag always)</label>
+      <div class="row btns"><button id="kick" title="Random push (B)">Push (random kick)</button></div>
+    </section>
+
+    <section>
+      <h3>Readouts</h3>
+      <table class="readouts" id="readouts"></table>
+    </section>
+
+    <section>
+      <h3>Events</h3>
+      <pre id="events" class="events"></pre>
+    </section>
+    <footer class="muted small">MuJoCo <span id="v-mj"></span> (WASM) · three.js · onnxruntime-web. <a href="#" id="help-open">Keys (H)</a></footer>
+  </aside>
+</div>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

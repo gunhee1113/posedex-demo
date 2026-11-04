@@ -1,0 +1,7 @@
+{
+ "target": "pages",
+ "scene": "assets/mjcf/manifest.json",
+ "policy": "assets/policy/manifest.json",
+ "variant": "fp32",
+ "object_data": "assets/objdata/"
+}

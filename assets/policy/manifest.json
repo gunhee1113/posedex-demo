@@ -1,0 +1,7 @@
+{
+ "variants": {
+  "fp32": "fp32/manifest.json"
+ },
+ "default_variant": "fp32",
+ "constants": "constants.json"
+}

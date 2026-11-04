@@ -1,0 +1,74 @@
+{
+ "onnx": "policy.onnx",
+ "external_data": [
+  "policy.onnx.data0",
+  "policy.onnx.data1",
+  "policy.onnx.data2",
+  "policy.onnx.data3"
+ ],
+ "weights": "fp32",
+ "opset": 17,
+ "obs_dim": 601,
+ "action_dim": 22,
+ "lstm_hidden": 1024,
+ "inputs": {
+  "obs": [
+   1,
+   601
+  ],
+  "h": [
+   1,
+   1024
+  ],
+  "c": [
+   1,
+   1024
+  ]
+ },
+ "outputs": {
+  "action": [
+   1,
+   22
+  ],
+  "h_out": [
+   1,
+   1024
+  ],
+  "c_out": [
+   1,
+   1024
+  ]
+ },
+ "notes": [
+  "action = Gaussian mean mu, not clamped: clamp to [-1, 1] before action_ref (rl_games player clip_actions)",
+  "h, c = zeros at every episode reset; feed h_out, c_out back as h, c each control step (30 Hz)",
+  "obs = obs_ref.observation(...) (601, clamped to +-10); normaliser, SAPG leader embedding are inside"
+ ],
+ "source": {
+  "checkpoint": "r326__32.01B_ep61050.pth",
+  "checkpoint_sha256": "f0a73677260f7bc709454853749f7404cd3fe15dcf9224d323ec8d2ef87ff3f8",
+  "frame": 32007782400,
+  "epoch": 61050,
+  "sapg_blocks": 8,
+  "leader_index": 7,
+  "run": "r326",
+  "sapg_coef_id": 0.0
+ },
+ "files": {
+  "policy.onnx": {
+   "bytes": 125905
+  },
+  "policy.onnx.data0": {
+   "bytes": 6701056
+  },
+  "policy.onnx.data1": {
+   "bytes": 8388608
+  },
+  "policy.onnx.data2": {
+   "bytes": 12582912
+  },
+  "policy.onnx.data3": {
+   "bytes": 7340032
+  }
+ }
+}
