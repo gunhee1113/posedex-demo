@@ -45,10 +45,10 @@
   "obs = obs_ref.observation(...) (601, clamped to +-10); normaliser, SAPG leader embedding are inside"
  ],
  "source": {
-  "checkpoint": "r326__32.01B_ep61050.pth",
-  "checkpoint_sha256": "f0a73677260f7bc709454853749f7404cd3fe15dcf9224d323ec8d2ef87ff3f8",
-  "frame": 32007782400,
-  "epoch": 61050,
+  "checkpoint": "r326__34.00B_ep64850.pth",
+  "checkpoint_sha256": "a0663df9188702aa65ec688a6461c008f6a25548454e17bc16d38df7084afeab",
+  "frame": 34000076800,
+  "epoch": 64850,
   "sapg_blocks": 8,
   "leader_index": 7,
   "run": "r326",
